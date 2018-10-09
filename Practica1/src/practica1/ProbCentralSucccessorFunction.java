@@ -19,7 +19,7 @@ public class ProbCentralSucccessorFunction implements SuccessorFunction{
         for(int i=0;i<board.getNClients(); i++){
             // FEM UN BOARD PER CADA OPERADOR QUE TINGUEM
             double consum = board.getClients().get(i).getConsumo();
-            ProbCentralBoard newBoardMC= new ProbCentralBoard(board.getCentrals(),board.getNClients(), propc, propg); //Board per l'operador canviar central
+            ProbCentralBoard newBoardMC= new ProbCentralBoard(board.getCentrals(),board.getNClients(), board.getPropc(), board.getPropg()); //Board per l'operador canviar central
             Centrales CentralsDisponibles = newBoardMC.getCentralsDisponibles(consum);
             //per un client i concret el posem a totes les centrals lliures disponibles, és a dir, que això generarà tants successors com centrals disponibles
              for (int j=0;j<CentralsDisponibles.size(); j++){
@@ -44,3 +44,4 @@ public class ProbCentralSucccessorFunction implements SuccessorFunction{
     return retVal;
   }
 }
+
