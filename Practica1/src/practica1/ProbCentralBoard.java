@@ -17,6 +17,8 @@ public class ProbCentralBoard {
     private Clientes clients;
     private static int nclients;
     private int[] connexions; // index = client -> valor = index de la central
+    private double[] propc;
+    double propg;
     
     private double[] nivellProduccio;
     private Random r;
@@ -38,7 +40,7 @@ public class ProbCentralBoard {
             return dist;	
     }
     
-    public ProbCentralBoard (int[] cent, int ncl, double[] propc, double propg) throws Exception {
+    public ProbCentralBoard (int[] cent, int ncl, double[] propc1, double propg1) throws Exception {
         this.r = new Random();
         int seed = r.nextInt();
         centrals = new Centrales(cent, seed);
@@ -47,6 +49,8 @@ public class ProbCentralBoard {
         ProbCentralBoard.nclients = ncl;
         connexions = new int[nclients];
         nivellProduccio = new double[ncentrals];
+        propc = propc1;
+        propg = propg1;
         
         // Ordenem els clients de major a menor consum
         Collections.sort(clients, (Cliente c1, Cliente c2) -> {
@@ -138,6 +142,14 @@ public class ProbCentralBoard {
     
     public Clientes getClients(){
         return clients;
+    }
+    
+    public double[] getPropc(){
+        return propc;
+    }
+    
+    public double getPropg(){
+        return propg;
     }
     
     public Centrales getCentralsDisponibles(double d){ //retorna un subset de les centrals que 
