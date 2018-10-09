@@ -1,0 +1,7 @@
+-Canviar client de central
+-Intercanviar clients de centrals
+-Assignar x clients sense central a una central parada (cost engegar central)
+-Parar central (té un cost associat)
+-Engegar central i assignar-li clients
+
+Treballar en blocs de clients i centrals, ja que sinó és complicat que l'heurístic treballi
