@@ -131,6 +131,19 @@ public class ProbCentralBoard {
          return true;
     }
     
+	//CONSULTORES
+    
+    public int getnclients(){
+        return nclients;
+    }
+    
+    public Centrales getCentrals(){
+        return centrals;
+    }
+    
+    public double[] getpropc(){
+        
+    }
     /*public void assignaACentral(Cliente cl, Central ce){
         miPair assignacio;
         assignacio = new miPair(cl, ce);
