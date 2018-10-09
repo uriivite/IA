@@ -1,0 +1,6 @@
+La funció heurística pel benefici:
+  - Només s'incrementarà el benefici si aconsegueixes que una central no hagi de treballar, per tant, has d'intentar posar tants
+  clients a cada central com puguis (maximitzar producció - sum(consums))
+  
+  - Si tenim una central inactiva i uns quants clients no prioritaris sense assignar només ens sortirà a compte engegar una central
+  si es cobreixen els gastos de posar-la en marxa amb lo que es cobri dels clients.
