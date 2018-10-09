@@ -4,3 +4,5 @@ La funció heurística pel benefici:
   
   - Si tenim una central inactiva i uns quants clients no prioritaris sense assignar només ens sortirà a compte engegar una central
   si es cobreixen els gastos de posar-la en marxa amb lo que es cobri dels clients.
+
+Solució final quan la funció heurística no troba cap millora del benefici en els successors.
