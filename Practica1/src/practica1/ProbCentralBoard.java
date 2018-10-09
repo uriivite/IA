@@ -110,11 +110,13 @@ public class ProbCentralBoard {
 	}		
     }
 
-    public boolean moureClient(int i, int x, int y){
-        if (x > 100 | y > 100) return false;
-         clients.get(i).setCoordX(x);
-         clients.get(i).setCoordY(y);
-         return true;
+  //OPERADORS
+    
+    //modificar el vector connexions pq a la posició del client cl hi hagi la posició de la central ce
+    public void moureClient(Cliente cl, Central ce){
+        int i = clients.find(cl);
+        int j = centrals.find(ce);
+        connexions[i] = j;
     }
 
     public boolean moureCentral(int i, int x, int y){
@@ -124,7 +126,7 @@ public class ProbCentralBoard {
          return true;
     }
     
-	//CONSULTORES
+    //CONSULTORES
     
     public int getNClients(){
         return nclients;
@@ -133,4 +135,24 @@ public class ProbCentralBoard {
     public Centrales getCentrals(){
         return centrals;
     }
+    
+    public Clientes getClients(){
+        return clients;
+    }
+    
+    public Centrales getCentralsDisponibles(double d){ //retorna un subset de les centrals que 
+        Centrales c = null;
+        for (int i = 0; i < ncentrals; i++){
+            if (nivellProduccio[i] - d > 0) c.add(centrals.get(i));
+        }
+        return c;
+    }
+    
+    
+    
+    /*public void assignaACentral(Cliente cl, Central ce){
+        miPair assignacio;
+        assignacio = new miPair(cl, ce);
+        assignacions.add(assignacio);
+    }*/
 }
