@@ -1,10 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package practica1;
 
+import IA.Energia.Centrales;
 import aima.search.framework.Successor;
 import aima.search.framework.SuccessorFunction;
 import java.util.ArrayList;
@@ -19,14 +16,14 @@ public class ProbCentralSucccessorFunction implements SuccessorFunction{
     public List getSuccessors(Object aState) {
         ArrayList retVal= new ArrayList();
         ProbCentralBoard board=(ProbCentralBoard) aState;
-        for(int i=0;i<board.getnclients(); i++){
-            // FEM UN BOARD PER CADA OPERADOR QUE TINGUEM 
-             ProbCentralBoard newBoardMC= new ProbCentralBoard(board.getCentrals(),board.getnclients(),board.getpropc(),board.getDimPlano(),board.getPlano()); //Board per l'operador canviar central
-             //per un client i concret el posem a totes les centrals lliures disponibles, és a dir, que això generarà tants successors com centrals disponibles
-             for (int j=0;j<board.getnum_centrals_disponibles(); j++){
-                 
-                newBoardMC.moureclient(newBoardMC.getClients().get(i), newBoardMC.getcentrals_disponibles().get(j));
-                if newBoardMC.getCentrals().get(j)
+        for(int i=0;i<board.getNClients(); i++){
+            // FEM UN BOARD PER CADA OPERADOR QUE TINGUEM
+            double consum = board.getClients().get(i).getConsumo();
+            ProbCentralBoard newBoardMC= new ProbCentralBoard(board.getCentrals(),board.getNClients(), propc, propg); //Board per l'operador canviar central
+            Centrales CentralsDisponibles = newBoardMC.getCentralsDisponibles(consum);
+            //per un client i concret el posem a totes les centrals lliures disponibles, és a dir, que això generarà tants successors com centrals disponibles
+             for (int j=0;j<CentralsDisponibles.size(); j++){
+                newBoardMC.moureClient(newBoardMC.getClients().get(i), CentralsDisponibles.get(j));
                 String S="Moure client "+i+"a central "+j; 
                 retVal.add(new Successor(S,newBoardMC));
              }
