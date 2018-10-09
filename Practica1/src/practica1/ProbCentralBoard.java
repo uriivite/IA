@@ -9,7 +9,7 @@ import IA.Energia.Central;
 import IA.Energia.Centrales;
 import IA.Energia.Cliente;
 import IA.Energia.Clientes;
-import java.util.ArrayList;
+import java.util.*;
 
 /**
  *
@@ -20,15 +20,20 @@ public class ProbCentralBoard {
     private static int ncentrals;
     private Clientes clients;
     private static int nclients;
-    private int [][] board;
-    private ArrayList assignacions ; //Jordi: faria un vector 
+    //private int [][] board;
+    private ArrayList assignacions; //Jordi: faria un vector 
      // de pairs [client,central] per representar l'assignació d'un client a una central.
      // Oriol: Podem implmentar això que has dit amb un ArrayList de miPair, i ja
      // tenim el vector de pairs que vols.
     
-    public ProbCentralBoard (int cent[], int seed) throws Exception {
+    
+    public ProbCentralBoard (int[] cent, int ncl, double[] propc, double propg) throws Exception {
+        Random rnd = new Random();
+        int seed = rnd.nextInt();
         centrals = new Centrales(cent, seed);
         ncentrals = centrals.size();
+        clients = new Clientes(ncl, propc, propg, seed);
+        ProbCentralBoard.nclients = ncl;
         assignacions = new ArrayList<>(nclients);
     }
 
@@ -51,9 +56,9 @@ public class ProbCentralBoard {
     // no sé si és O(n log(n)) o O(log n) però potser despres ja estem una mica més
     // a prop de la solucio final.
 
-    public int [][] getBoard(){
+   /* public int [][] getBoard(){
          return(board);
-    }
+    }*/
 
     public boolean moureClient(int i, int x, int y){
         if (x > 100 | y > 100) return false;
