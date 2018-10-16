@@ -28,9 +28,6 @@ public class Practica1 {
         Search search=null; 
         Problem p;
            p = new Problem(board, new ProbCentralSucccessorFunction(), new ProbCentralGoalTest(), new ProbCentralHeuristicFunction());
-
-        // Instantiate the search algorithm
-	// AStarSearch(new GraphSearch()) or IterativeDeepeningAStarSearch()
       
         if (alg==1) search =  new HillClimbingSearch();
         if (alg==2) search =  new SimulatedAnnealingSearch(2000,100,5,0.001);
