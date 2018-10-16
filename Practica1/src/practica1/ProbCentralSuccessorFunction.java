@@ -1,4 +1,3 @@
-
 package practica1;
 
 import IA.Energia.Centrales;
@@ -13,7 +12,7 @@ import java.util.logging.Logger;
  *
  * @author jordi.donadeu
  */
-public class ProbCentralSucccessorFunction implements SuccessorFunction{
+public class ProbCentralSuccessorFunction implements SuccessorFunction{
     @Override
     public List getSuccessors(Object aState) {
         ArrayList retVal= new ArrayList();
@@ -25,7 +24,7 @@ public class ProbCentralSucccessorFunction implements SuccessorFunction{
             try {
                 newBoardMC = new ProbCentralBoard(board.getCent(), board.getNClients(), board.getPropc(), board.getPropg()); //Board per l'operador canviar central
             } catch (Exception ex) {
-                Logger.getLogger(ProbCentralSucccessorFunction.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(ProbCentralSuccessorFunction.class.getName()).log(Level.SEVERE, null, ex);
             }
             Centrales CentralsDisponibles = newBoardMC.getCentralsDisponibles(consum);
             //per un client i concret el posem a totes les centrals lliures disponibles, és a dir, que això generarà tants successors com centrals disponibles
@@ -35,8 +34,19 @@ public class ProbCentralSucccessorFunction implements SuccessorFunction{
                 retVal.add(new Successor(S,newBoardMC));
              }
         }
+        for (int k=0;k<board.getNCentrals(); ++k){
+            ProbCentralBoard newBoardBC = null;
+            try {
+                newBoardBC = new ProbCentralBoard(board.getCent(), board.getNClients(), board.getPropc(), board.getPropg()); //Board per l'operador canviar central
+            } catch (Exception ex) {
+                Logger.getLogger(ProbCentralSuccessorFunction.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            if (board.buidarCentral(k)){
+                String S="Es buida central "+k; 
+                retVal.add(new Successor(S,newBoardBC));
+            }
+        }
 
     return retVal;
   }
 }
-
