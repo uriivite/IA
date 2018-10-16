@@ -123,8 +123,16 @@ public class ProbCentralBoard {
     
     //modificar el vector connexions pq a la posició del client cl hi hagi la posició de la central ce
     public void moureClient(Cliente cl, Central ce){
-        int i = clients.find(cl);
-        int j = centrals.find(ce);
+        boolean found = false;
+        int i = 0;
+        int j = 0;
+        for (; i < nclients && !found; ++i){
+            if (cl == clients.get(i)) found = true;
+        }
+        found = false;
+        for (; j < ncentrals && !found; ++j){
+            if (ce == centrals.get(j)) found = true;
+        }    
         connexions[i] = j;
         falta recalcular consum del client a la nova central        
         falta recalcular capacitat central nova i a la central que tenia abans
@@ -215,6 +223,14 @@ public class ProbCentralBoard {
         return preu;
     }
     
+    public double getConsum(int tipus, double produccio){
+        double consum;
+        if (tipus == 0) consum = 2000 + produccio*5;
+        else if (tipus == 1) consum = 1000 + produccio*8;
+        else consum = 500 + produccio*15;
+        return consum;
+    }
+    
     public double getConsumClients(){ //serà el sumatori del consum*preuMW(segons prioritat) de tots els clients q estan a una central
         double consum = 0;
         for (int i=0; i < nclients; ++i){
@@ -227,8 +243,8 @@ public class ProbCentralBoard {
     
     public double getConsumCentrals(){ //serà el sumatori del cost de totes les centrals q tinguin algun client
         double consum = 0;
-        for (int i=0; i < nclients; ++i){
-            
+        for (int i=0; i < ncentrals; ++i){
+            if (centralActiva(i)) consum+= getConsum(centrals.get(i).getTipo(), centrals.get(i).getProduccion());
         }
         return consum;
     }
