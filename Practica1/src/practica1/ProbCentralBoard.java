@@ -20,7 +20,8 @@ public class ProbCentralBoard {
     private double propg;
     private int[] cent;
     
-    private double[] nivellProduccio;
+    private miPair[] nivellProduccio; // Controla la diferència entre la
+										// capacitat que te una 
     private Random r;
     
     private double getConsumoReal(Cliente c, Central cn){
@@ -33,6 +34,14 @@ public class ProbCentralBoard {
         else if (dist > 10) boost += 0.1;
         return c.getConsumo()*boost;		
     }
+    
+    // Ordena les centrals segons la diferència del total de producció
+    // que poden donar i l'energia que estan donant. L'identificador de
+    // la central és l'identificació que sel's hi ha assignat al començament
+    // del programa. Ordenacio de menor a major diferència.
+    private void ordenaCentrals(miPair[] produccions) {
+			
+	}
 	
     private double distanciaEuclidiana(int x1, int y1, int x2, int y2){
             double dist;
@@ -48,7 +57,7 @@ public class ProbCentralBoard {
         clients = new Clientes(ncl, propc, propg, seed);
         ProbCentralBoard.nclients = ncl;
         connexions = new int[nclients];
-        nivellProduccio = new double[ncentrals];
+        nivellProduccio = new MiPair[ncentrals];
         propc = propc1;
         propg = propg1;
 	cent = cent1;
@@ -70,7 +79,10 @@ public class ProbCentralBoard {
         // Inicialitacio del vector de produccio amb els valors maxims de produccio
         // de cada central, on i = index de la central dins de "centrals" i
         // nivellProduccio[i] = produccio de la central i
-        for (int i = 0; i < ncentrals; i++) nivellProduccio[i] = centrals.get(i).getProduccion();
+        for (int i = 0; i < ncentrals; i++) {
+				nivellProduccio[i].setFirst(i);
+				nivellProduccio[i].setSecond(centrals.get(i).getProduccion());
+			}
     }
 
     public void solucioInicial(int tipus) {
@@ -119,9 +131,9 @@ public class ProbCentralBoard {
     
     //modificar el vector connexions pq a la posició del client cl hi hagi la posició de la central ce
     public void moureClient(Cliente cl, Central ce){
-        /*int i = clients.find(cl);
+        int i = clients.find(cl);
         int j = centrals.find(ce);
-        connexions[i] = j; */
+        connexions[i] = j;
     }
     
     /*public boolean moureCentral(int i, int x, int y){
@@ -217,9 +229,9 @@ public class ProbCentralBoard {
         return c;
     }
     
-    public boolean isGoalState(){
-     return (false);
-  }
+    public boolean isGoalState() {
+		return(false);
+		}
     
     
     
