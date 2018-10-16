@@ -5,6 +5,7 @@ import IA.Energia.Centrales;
 import IA.Energia.Cliente;
 import IA.Energia.Clientes;
 import java.util.*;
+import java.lang.*;
 
 /**
  *
@@ -17,11 +18,9 @@ public class ProbCentralBoard {
     private static int nclients;
     private int[] connexions; // index = client -> valor = index de la central
     private double[] propc;
-    private double propg;
-    private int[] cent;
+    double propg;
     
-    private miPair[] nivellProduccio; // Controla la diferència entre la
-										// capacitat que te una 
+    private miPair[] nivellProduccio;
     private Random r;
     
     private double getConsumoReal(Cliente c, Central cn){
@@ -34,14 +33,6 @@ public class ProbCentralBoard {
         else if (dist > 10) boost += 0.1;
         return c.getConsumo()*boost;		
     }
-    
-    // Ordena les centrals segons la diferència del total de producció
-    // que poden donar i l'energia que estan donant. L'identificador de
-    // la central és l'identificació que sel's hi ha assignat al començament
-    // del programa. Ordenacio de menor a major diferència.
-    private void ordenaCentrals(miPair[] produccions) {
-			
-	}
 	
     private double distanciaEuclidiana(int x1, int y1, int x2, int y2){
             double dist;
@@ -49,7 +40,7 @@ public class ProbCentralBoard {
             return dist;	
     }
     
-    public ProbCentralBoard (int[] cent1, int ncl, double[] propc1, double propg1) throws Exception {
+    public ProbCentralBoard (int[] cent, int ncl, double[] propc1, double propg1) throws Exception {
         this.r = new Random();
         int seed = r.nextInt();
         centrals = new Centrales(cent, seed);
@@ -57,10 +48,9 @@ public class ProbCentralBoard {
         clients = new Clientes(ncl, propc, propg, seed);
         ProbCentralBoard.nclients = ncl;
         connexions = new int[nclients];
-        nivellProduccio = new MiPair[ncentrals];
+        nivellProduccio = new miPair[ncentrals];
         propc = propc1;
         propg = propg1;
-	cent = cent1;
         
         // Ordenem els clients de major a menor consum
         Collections.sort(clients, (Cliente c1, Cliente c2) -> {
@@ -79,10 +69,10 @@ public class ProbCentralBoard {
         // Inicialitacio del vector de produccio amb els valors maxims de produccio
         // de cada central, on i = index de la central dins de "centrals" i
         // nivellProduccio[i] = produccio de la central i
-        for (int i = 0; i < ncentrals; i++) {
-				nivellProduccio[i].setFirst(i);
-				nivellProduccio[i].setSecond(centrals.get(i).getProduccion());
-			}
+        for (int i = 0; i < ncentrals; i++){
+            nivellProduccio[i].setFirst(i);
+            nivellProduccio[i].setSecond(centrals.get(i).getProduccion());
+        }
     }
 
     public void solucioInicial(int tipus) {
@@ -143,37 +133,34 @@ public class ProbCentralBoard {
          return true;
     }*/
     
-    //Intenta repartir tots els clients de la central amb index j en altres centrals, si ho aconsegueix retorna cert, sinó fals
+    //Intenta repartir tots els clients de la central amb index c en altres centrals, si ho aconsegueix retorna cert, sinó fals
     public boolean buidarCentral(int c){
-        //Criteri de assignacio
-            //Primera opcio: nivellProduccio[] - getConsumoReal == 0)
-            //Segona opcio: Central activa més buida de totes
-        boolean error = false;
         for(int i = 0; i < nclients;i++){
             if (connexions[i] == c){
                 for (int j = 0;j < ncentrals;j++){
-                    if (j == c) j++;//Saltar-se la central que volem buidar(arreglar perque suposo que pot petar)
-                    double gasto = getConsumoReal(clients.get(i),centrals.get(j));
-                    if(nivellProduccio[j] - gasto == 0){
-                        connexions[i] = j;
-                        nivellProduccio[j] -= gasto;
-                        nivellProduccio[c] += gasto;
-                    }
-                    else{
-                        int cOptima;
-                        cOptima = getCentralActivMenysProd(c,gasto);
-                        if (cOptima != -1){
-                            connexions[i] = cOptima;
-                            nivellProduccio[cOptima]-= gasto;
-                            nivellProduccio[c] += gasto;
+                    int iReal = (int)nivellProduccio[j].getFirst();
+                    if (c != iReal){
+                        double gasto = getConsumoReal(clients.get(i),centrals.get(iReal));
+                        double prodActual = (double) nivellProduccio[j].getSecond();
+                        if (centralActiva(iReal) &&  prodActual - gasto >= 0){
+                            connexions[i] = iReal;
+                            nivellProduccio[j].setSecond(prodActual-gasto);
+                            for (int k = 0;k < ncentrals;k++){//Es feo pero es necessita aquest bucle per trobar la central c
+                                                              //i sumar-li el gasto que recupera
+                                if(c == (int)nivellProduccio[k].getFirst()){
+                                    double aux = (double) nivellProduccio[k].getSecond();
+                                    nivellProduccio[k].setSecond(aux+gasto);
+                                }
+                            }
                         }
-                        else error = true;
+                        else return false;
+                        
                     }
                 }
             }
             
         }
-        return !error;
+        return true;
     }  
     
     //CONSULTORES
@@ -197,29 +184,25 @@ public class ProbCentralBoard {
     public double getPropg(){
         return propg;
     }
-	
-    public int[] getCent(){
-        return cent;
-    }	
     
     public boolean centralActiva(int i){//Retorna si la central i està activa o no
-        return nivellProduccio[i]!= centrals.get(i).getProduccion();
+        Double aux = new Double(centrals.get(i).getProduccion());
+        return aux.equals(nivellProduccio[i].getSecond());
     }
     
-    public int getCentralActivMenysProd(int c, double d){//Retorna la central activa mes lliure que pugui assumir el consum d
-        double prodMin = 0; //Inicialitzacio arbitraria
+    /*public int getCentralActivMesProd(int c, double d){//Retorna la central activa amb mes prod que pugui assumir el consum d
+        double prodMin = centrals.get(0).getProduccion(); //Inicialitzacio arbitraria
         int indexMin = -1;
         for (int i = 0; i < ncentrals; i++){
-            if (c == i) i++;//Si c és l'ultim element pot petar??
-            if (centralActiva(i)){                
-               if (nivellProduccio[i] - d > 0 && nivellProduccio[i] > prodMin){
+            if (i != c && centralActiva(i)){                
+               if (nivellProduccio[i] - d > 0 && nivellProduccio[i] - d < prodMin){
                    indexMin = i;
-                   prodMin = nivellProduccio[i];
+                   prodMin = nivellProduccio[i] - d;
                }
             }        
         }
         return indexMin;
-    }
+    }*/
     
     public Centrales getCentralsDisponibles(double d){ //retorna un subset de les centrals que 
         Centrales c = null;
@@ -228,10 +211,6 @@ public class ProbCentralBoard {
         }
         return c;
     }
-    
-    public boolean isGoalState() {
-		return(false);
-		}
     
     
     
