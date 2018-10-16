@@ -119,9 +119,9 @@ public class ProbCentralBoard {
     
     //modificar el vector connexions pq a la posició del client cl hi hagi la posició de la central ce
     public void moureClient(Cliente cl, Central ce){
-        int i = clients.find(cl);
+        /*int i = clients.find(cl);
         int j = centrals.find(ce);
-        connexions[i] = j;
+        connexions[i] = j; */
     }
     
     /*public boolean moureCentral(int i, int x, int y){
@@ -216,6 +216,10 @@ public class ProbCentralBoard {
         }
         return c;
     }
+    
+    public boolean isGoalState(){
+     return (false);
+  }
     
     
     
