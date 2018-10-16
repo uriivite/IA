@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package practica1;
 
 import java.util.Calendar;
@@ -17,10 +12,7 @@ import aima.search.framework.SearchAgent;
 import aima.search.informed.HillClimbingSearch;
 import aima.search.informed.SimulatedAnnealingSearch;
 
-/**
- *
- * @author oriolvidal
- */
+
 public class Practica1 {
 
        public static void main(String[] args) throws Exception{
@@ -33,7 +25,7 @@ public class Practica1 {
         int alg = 1; //si val 1 es farà hill climbing, si val 2 es farà simulated annealig
 
         ProbCentralBoard board = new ProbCentralBoard(cent1, ncl, propc1, propg1);
-        Search search=null; //new DepthLimitedSearch(2*nc);;
+        Search search=null; 
         Problem p;
            p = new Problem(board, new ProbCentralSucccessorFunction(), new ProbCentralGoalTest(), new ProbCentralHeuristicFunction());
 
@@ -50,8 +42,6 @@ public class Practica1 {
         printActions(agent.getActions());
         printInstrumentation(agent.getInstrumentation());
 
-        // You can access also to the goal state using the
-	// method getGoalState of class Search
 
     }
 
@@ -66,10 +56,10 @@ public class Practica1 {
     }
     
     private static void printActions(List actions) {
-        for (int i = 0; i < actions.size(); i++) {
-            String action = (String) actions.get(i);
-            System.out.println(action);
-        }
+           for (Object action1 : actions) {
+               String action = (String) action1;
+               System.out.println(action);
+           }
     }
     
 }
