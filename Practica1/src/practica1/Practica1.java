@@ -18,9 +18,9 @@ public class Practica1 {
        public static void main(String[] args) throws Exception{
         
         
-        int[] cent1 = new int[]{1, 2, 3}; //vector de 3 posicions amb el número de centrals de cada tipus a generar
-        int ncl = 2; //número de clients
-        double[] propc1 = new double[]{0.33, 0.33, 0.34}; //vector de 3 posicions amb les proporcions dels tipus de clients, sumen 1
+        int[] cent1 = new int[]{2, 3, 4}; //vector de 3 posicions amb el número de centrals de cada tipus a generar
+        int ncl = 10; //número de clients
+        double[] propc1 = new double[]{0.25, 0.25, 0.5}; //vector de 3 posicions amb les proporcions dels tipus de clients, sumen 1
         double propg1 = 0.1; //proporció de clients amb servei garantitzat
         int alg = 1; //si val 1 es farà hill climbing, si val 2 es farà simulated annealig
 
