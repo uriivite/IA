@@ -34,18 +34,6 @@ public class ProbCentralSucccessorFunction implements SuccessorFunction{
                 String S="Moure client "+i+"a central "+j; 
                 retVal.add(new Successor(S,newBoardMC));
              }
-             ProbCentralBoard newBoardPU= new ProbCentralBoard(board.getNumAntenas(),board.getMaxPotencia(),board.getAntenas(),board.getDimPlano(),board.getPlano());
-             if (newBoardPU.aumentaPotencia(i)) {
-                String S=new String(ProbCentralBoard.AUMENTAR+" "+i);
-                retVal.add(new Successor(S,newBoardPU));
-             }
-
-             ProbCentralBoard newBoardPD= new ProbCentralBoard(board.getNumAntenas(),board.getMaxPotencia(),board.getAntenas(),board.getDimPlano(),board.getPlano());
-             if (newBoardPD.disminuyePotencia(i)) {
-                String S=new String(ProbCentralBoard.DISMINUIR+" "+i);
-                retVal.add(new Successor(S,newBoardPD));
-             }
-
         }
 
     return retVal;
