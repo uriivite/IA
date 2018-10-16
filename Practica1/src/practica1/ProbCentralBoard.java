@@ -16,7 +16,7 @@ public class ProbCentralBoard {
     private static int ncentrals;
     private Clientes clients;
     private static int nclients;
-    private int[] connexions; // index = client -> valor = index de la central
+    private int[] connexions; // index = client -> valor = index de la central o -1 si no te central
     private double[] propc;
     private double propg;
     private int[] cent;
@@ -196,7 +196,42 @@ public class ProbCentralBoard {
     
     public int[] getCent(){
         return cent;
-    }	
+    }
+    
+    public int getPreu(int tipus, int c){
+        int preu;
+        if (tipus == 0){
+            if (c == 0) preu=40;
+            else preu=30;
+        }
+        else if (tipus == 1){
+            if (c == 0) preu=50;
+            else preu=40;
+        }
+        else {
+            if (c==0) preu=60;
+            else preu=50;
+        }
+        return preu;
+    }
+    
+    public double getConsumClients(){ //serà el sumatori del consum*preuMW(segons prioritat) de tots els clients q estan a una central
+        double consum = 0;
+        for (int i=0; i < nclients; ++i){
+            if (connexions[i] != -1){
+                consum += clients.get(i).getConsumo() * getPreu(clients.get(i).getTipo(), clients.get(i).getContrato());
+            }
+        }
+        return consum;
+    }
+    
+    public double getConsumCentrals(){ //serà el sumatori del cost de totes les centrals q tinguin algun client
+        double consum = 0;
+        for (int i=0; i < nclients; ++i){
+            
+        }
+        return consum;
+    }
     
     public boolean centralActiva(int i){//Retorna si la central i està activa o no
         Double aux = new Double(centrals.get(i).getProduccion());
