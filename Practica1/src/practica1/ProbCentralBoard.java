@@ -24,6 +24,16 @@ public class ProbCentralBoard {
     
     private miPair[] nivellProduccio;
     private Random r;
+	
+// Ordenem les centrals segons l'Energia "lliure" que encara poden suministrar.
+    private void ordenaCentrals() {
+        Arrays.sort(nivellProduccio, (miPair o1, miPair o2) -> {
+            Double dif1;
+            dif1 = (double) o1.getSecond();
+            Double dif2 = (double) o2.getSecond();
+            return dif1.compareTo(dif2);
+        });
+    }
     
     private double getConsumoReal(Cliente c, Central cn){
         double dist = distanciaEuclidiana(c.getCoordX(),c.getCoordY(), 
@@ -49,7 +59,7 @@ public class ProbCentralBoard {
     }
     
     private boolean centralPlena(int i){
-		return nivellProduccio[i].getSecond() == 0;
+		return (double)nivellProduccio[i].getSecond() == 0;
 	}
 	
     public ProbCentralBoard (int[] cent1, int ncl, double[] propc1, double propg1) throws Exception {
@@ -98,10 +108,10 @@ public class ProbCentralBoard {
                                 for (int j = 0; j < ncentrals; j++){
                                         Central cn = centrals.get(j);
                                         double gasto = getConsumoReal(c,cn);
-                                        if (gasto <=  nivellProduccio[j] - cn.getProduccion()){
+					if (gasto <=  ((double)nivellProduccio[j].getSecond() - cn.getProduccion())){
                                                 connexions[i] = j;
-                                                nivellProduccio[j] -= gasto;
-                                        }							
+                                                nivellProduccio[j].setSecond((double)nivellProduccio[j].getSecond() - gasto);
+                                        }								
                                 }
                         }
                 }
@@ -119,15 +129,16 @@ public class ProbCentralBoard {
                             dist_par = distanciaEuclidiana(c.getCoordX(),c.getCoordY(), 
                                     cn.getCoordX(), cn.getCoordY());
                             double gasto = getConsumoReal(c,cn);
-                            if (dist_par < dist_min && gasto <=  nivellProduccio[j] - cn.getProduccion())		{
+			    if ((dist_par < dist_min) && (gasto <=  (double)nivellProduccio[j].getSecond() - cn.getProduccion())) {
                                     connexions[i] = j;
-                                    nivellProduccio[j] -= gasto;
+                                    nivellProduccio[j].setSecond((double)nivellProduccio[j].getSecond() - gasto);
                             }										
                         }						
                     }					
                 }
                 break;			
-	}		
+	}
+	    this.ordenaCentrals();
     }
 
   //OPERADORS
