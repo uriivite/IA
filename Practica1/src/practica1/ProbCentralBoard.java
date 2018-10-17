@@ -134,8 +134,8 @@ public class ProbCentralBoard {
             if (ce == centrals.get(j)) found = true;
         }    
         connexions[i] = j;
-        falta recalcular consum del client a la nova central        
-        falta recalcular capacitat central nova i a la central que tenia abans
+        //falta recalcular consum del client a la nova central        
+        //falta recalcular capacitat central nova i a la central que tenia abans
         
     }
     
@@ -174,6 +174,19 @@ public class ProbCentralBoard {
             
         }
         return true;
+    }
+    
+    public void buidarCentrals(){
+        for (int j = ncentrals-1;j >=0 ;j--){
+            int iReal = (int)nivellProduccio[j].getFirst();
+            if (centralActiva(iReal)){
+                for (int i = 0; i < nclients;i++){
+                    if (connexions[i] == iReal){
+                        
+                    }
+                }                
+            }
+        }
     }  
     
     //CONSULTORES
@@ -250,7 +263,7 @@ public class ProbCentralBoard {
     }
     
     public boolean centralActiva(int i){//Retorna si la central i està activa o no
-        Double aux = new Double(centrals.get(i).getProduccion());
+        Double aux = centrals.get(i).getProduccion();
         return aux.equals(nivellProduccio[i].getSecond());
     }
     
