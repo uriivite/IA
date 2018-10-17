@@ -161,26 +161,29 @@ public class ProbCentralBoard {
     public boolean buidarCentral(int c){
         for(int i = 0; i < nclients;i++){
             if (connexions[i] == c){
-                for (int j = 0;j < ncentrals;j++){
+				boolean centralTrobada = false;
+                for (int j = 0; j < ncentrals && !centralTrobada; j++){
                     int iReal = (int)nivellProduccio[j].getFirst();
                     if (c != iReal){
                         double gasto = getConsumoReal(clients.get(i),centrals.get(iReal));
                         double prodActual = (double) nivellProduccio[j].getSecond();
                         if (centralActiva(iReal) &&  prodActual - gasto >= 0){
+							centralTrobada = true;
                             connexions[i] = iReal;
                             nivellProduccio[j].setSecond(prodActual-gasto);
-                            for (int k = 0;k < ncentrals;k++){//Es feo pero es necessita aquest bucle per trobar la central c
-                                                              //i sumar-li el gasto que recupera
+                            boolean assignat = false;
+                            for (int k = 0;k < ncentrals && !assignat;k++){/*Es feo pero es necessita aquest bucle per trobar la central c
+																			*i sumar-li el gasto que recupera*/
                                 if(c == (int)nivellProduccio[k].getFirst()){
+									assignat = true;
                                     double aux = (double) nivellProduccio[k].getSecond();
                                     nivellProduccio[k].setSecond(aux+gasto);
                                 }
                             }
                         }
-                        else return false;
-                        
                     }
                 }
+                if (!centralTrobada) return false;
             }
             
         }
@@ -212,17 +215,7 @@ public class ProbCentralBoard {
                 }                
             }
         }
-    }
-    
-    private int getIndexReal(){
-		for (int r= 0;r < ncentrals; r++){//Es feo pero es necessita aquest bucle per trobar la central c i sumar-li el gasto que recupera
-			if(c == (int)nivellProduccio[k].getFirst()){
-				double aux = (double) nivellProduccio[k].getSecond();
-				nivellProduccio[k].setSecond(aux+gasto);
-			}
-		}
-	}
-    
+    }  
     
     //CONSULTORES
     
@@ -296,33 +289,18 @@ public class ProbCentralBoard {
         }
         return consum;
     }
-
-    /*public int getCentralActivMesProd(int c, double d){//Retorna la central activa amb mes prod que pugui assumir el consum d
-        double prodMin = centrals.get(0).getProduccion(); //Inicialitzacio arbitraria
-        int indexMin = -1;
-        for (int i = 0; i < ncentrals; i++){
-            if (i != c && centralActiva(i)){                
-               if (nivellProduccio[i] - d > 0 && nivellProduccio[i] - d < prodMin){
-                   indexMin = i;
-                   prodMin = nivellProduccio[i] - d;
-               }
-            }        
-        }
-        return indexMin;
-    }*/
     
-    public Centrales getCentralsDisponibles(double d){ //retorna un subset de les centrals que 
+	public boolean isGoalState() {
+		return(false);
+    }
+
+    /*public Centrales getCentralsDisponibles(double d){ //retorna un subset de les centrals que 
         Centrales c = null;
         for (int i = 0; i < ncentrals; i++){
             if (nivellProduccio[i] - d > 0) c.add(centrals.get(i));
         }
         return c;
-    }
-    
-     public boolean isGoalState() {
-	return(false);
-    }
-    
+    }*/ 
     
     /*public void assignaACentral(Cliente cl, Central ce){
         miPair assignacio;
