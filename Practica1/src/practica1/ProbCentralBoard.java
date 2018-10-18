@@ -226,7 +226,31 @@ public class ProbCentralBoard {
                 }                
             }
         }
-    }  
+    }
+	/* Entenem com a central amb més potencial aquella que té molta energia
+    disponible no assignada, és a dir, aquella que està produint molta energia
+    però en té asignada molt poca a clients. Aquesta funció intenta assignar aquests
+    clients a altres centrals, per intentar que aquesta central quedi inoperativa.
+    */
+    public void buidarCentralAmbMesPotencial() {
+        int iCentral = (int)nivellProduccio[0].getFirst();
+        for (int i = 0; i < nclients; i++) {
+            if (connexions[i] == iCentral) {
+                Cliente c = clients.get(i);
+                Central cnAct = centrals.get(iCentral);
+                double consumRealActual = this.getConsumoReal(c, cnAct);
+                Central cn = centrals.get((int)nivellProduccio[1].getFirst());
+                double consumRealCentralNova = this.getConsumoReal(c, cn);
+                if (consumRealCentralNova <= (double)nivellProduccio[1].getSecond()) {
+                    // El client es pot assignar a la següent central
+                    connexions[i] = (int)nivellProduccio[1].getFirst();
+                    this.nivellProduccio[0].setSecond((double)nivellProduccio[0].getSecond() + consumRealActual);
+                    this.nivellProduccio[1].setSecond((double)nivellProduccio[1].getSecond() - consumRealCentralNova);
+                }
+            }
+        }
+        this.ordenaCentrals();
+    }
     
     //CONSULTORES
     
