@@ -15,7 +15,8 @@ public class ProbCentralHeuristicFunction implements HeuristicFunction{
    double heur = 0;
    double consum_clients = board.getConsumClients(); 
    double consum_centrals= board.getConsumCentrals(); //serà el sumatori del cost de totes les centrals q tinguin algun client
-   heur=(consum_clients - consum_centrals);
-   return(heur); 
+   double compensacio_clients = board.getCompensacio(); 
+   heur=(consum_clients - consum_centrals - compensacio_clients);
+   return -1*(heur); 
   }
 }
