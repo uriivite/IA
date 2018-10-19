@@ -208,7 +208,7 @@ public class ProbCentralBoard {
             if (centralActiva(iReal) && !centralPlena(j) && migRendiment(j)){
                 for (int i = 0; i < nclients;i++){
                     if (connexions[i] == iReal){
-						boolean assignat = fals;
+						boolean assignat = false;
                         for (int k = 0; k < ncentrals/2 && !assignat; k++){
 							if(centralActiva(k) && !centralPlena(k)){
 								double gasto = getConsumoReal(clients.get(i),centrals.get(k));
@@ -343,13 +343,15 @@ public class ProbCentralBoard {
         return compensacio;
     }
 
-    /*public Centrales getCentralsDisponibles(double d){ //retorna un subset de les centrals que 
-        Centrales c = null;
+    public Centrales getCentralsDisponibles(double d){ //retorna un subset de les centrals que 
+        ArrayList c;
+        c = new ArrayList<>();
         for (int i = 0; i < ncentrals; i++){
-            if (nivellProduccio[i] - d > 0) c.add(centrals.get(i));
+            if ((double)nivellProduccio[i].getSecond() >= d) 
+                c.add(centrals.get(i));
         }
         return c;
-    }*/ 
+    }
     
     /*public void assignaACentral(Cliente cl, Central ce){
         miPair assignacio;
