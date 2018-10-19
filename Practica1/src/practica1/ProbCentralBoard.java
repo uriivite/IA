@@ -307,6 +307,10 @@ public class ProbCentralBoard {
         return consum;
     }
     
+    public double getIndemnitzacio(double consum){
+        return 5*consum;
+    }
+    
     public double getConsumClients(){ //serà el sumatori del consum*preuMW(segons prioritat) de tots els clients q estan a una central
         double consum = 0;
         for (int i=0; i < nclients; ++i){
@@ -327,6 +331,16 @@ public class ProbCentralBoard {
     
 	public boolean isGoalState() {
 		return(false);
+    }
+        
+    public double getCompensacio(){ //serà el sumatori de les compensacions als clients que no estiguin assignats
+        double compensacio = 0;
+        for (int i=0; i < nclients; ++i){
+            if (connexions[i] == -1){
+                compensacio += getIndemnitzacio(clients.get(i).getConsumo());
+            }
+        }
+        return compensacio;
     }
 
     /*public Centrales getCentralsDisponibles(double d){ //retorna un subset de les centrals que 
