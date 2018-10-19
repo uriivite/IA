@@ -46,6 +46,11 @@ public class ProbCentralSuccessorFunction implements SuccessorFunction{
                 retVal.add(new Successor(S,newBoardBC));
             }
         }
+        ProbCentralBoard newBoardBCMP = null;
+        newBoardBCMP.buidarCentralAmbMesPotencial();
+        String S="buidar central amb més potencial"; 
+        retVal.add(new Successor(S,newBoardBCMP));
+        
 
     return retVal;
   }
