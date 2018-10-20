@@ -1,3 +1,4 @@
+
 package practica1;
 
 import IA.Energia.Centrales;
@@ -51,7 +52,11 @@ public class ProbCentralSuccessorFunction implements SuccessorFunction{
         String S="buidar central amb més potencial"; 
         retVal.add(new Successor(S,newBoardBCMP));
         
-
+        ProbCentralBoard newBoardIC = null;
+        newBoardIC.intercanviarClients();
+        S="intercanvia dos clients aleatoris de dos centrals diferents";
+        retVal.add(new Successor(S,newBoardIC));
+        
     return retVal;
   }
 }
