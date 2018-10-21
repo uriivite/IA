@@ -70,9 +70,9 @@ public class ProbCentralBoard {
     public ProbCentralBoard (int[] cent1, int ncl, double[] propc1, double propg1) throws Exception {
         this.r = new Random();
         int seed = r.nextInt();
-        centrals = new Centrales(cent, seed);
+        centrals = new Centrales(cent1, seed);
         ncentrals = centrals.size();
-        clients = new Clientes(ncl, propc, propg, seed);
+        clients = new Clientes(ncl, propc1, propg1, seed);
         ProbCentralBoard.nclients = ncl;
         connexions = new int[nclients];
         nivellProduccio = new miPair[ncentrals];
@@ -254,9 +254,7 @@ public class ProbCentralBoard {
         this.ordenaCentrals();
     }
     /*Intercanvia dos clients de dues centrals diferents de forma aleatoria*/
-    public void intercanviarClients(){
-        int c1 = r.nextInt(nclients-1);
-        int c2 = r.nextInt(nclients-1);
+    public void intercanviarClients(int c1, int c2){
         if (c1 != c2 && connexions[c1] != connexions[c2]){
             double consumC1old = getConsumoReal(clients.get(c1),centrals.get(connexions[c1]));
             double consumC1new = getConsumoReal(clients.get(c1),centrals.get(connexions[c2]));
