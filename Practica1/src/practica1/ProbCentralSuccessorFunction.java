@@ -1,6 +1,7 @@
+
 package practica1;
 
-import IA.Energia.Centrales;
+import IA.Energia.Central;
 import aima.search.framework.Successor;
 import aima.search.framework.SuccessorFunction;
 import java.util.ArrayList;
@@ -17,7 +18,8 @@ public class ProbCentralSuccessorFunction implements SuccessorFunction{
     public List getSuccessors(Object aState) {
         ArrayList retVal= new ArrayList();
         ProbCentralBoard board=(ProbCentralBoard) aState;
-        for(int i=0;i<board.getNClients(); i++){
+        int ncl = board.getNClients();
+        for(int i = 0; i < ncl; i++){
             // FEM UN BOARD PER CADA OPERADOR QUE TINGUEM
             double consum = board.getClients().get(i).getConsumo();
             ProbCentralBoard newBoardMC = null;
@@ -26,20 +28,21 @@ public class ProbCentralSuccessorFunction implements SuccessorFunction{
             } catch (Exception ex) {
                 Logger.getLogger(ProbCentralSuccessorFunction.class.getName()).log(Level.SEVERE, null, ex);
             }
-            Centrales CentralsDisponibles = newBoardMC.getCentralsDisponibles(consum);
+            
+            ArrayList <Integer> CentralsDisponibles = newBoardMC.getCentralsDisponibles(consum);
             //per un client i concret el posem a totes les centrals lliures disponibles, és a dir, que això generarà tants successors com centrals disponibles
-             for (int j=0;j<CentralsDisponibles.size(); j++){
-                newBoardMC.moureClient(newBoardMC.getClients().get(i), CentralsDisponibles.get(j));
+            for (int j = 0; j < CentralsDisponibles.size(); j++){
+                newBoardMC.moureClient(i, CentralsDisponibles.get(j));
                 String S="Moure client "+i+"a central "+j; 
                 retVal.add(new Successor(S,newBoardMC));
-             }
+            }
              ProbCentralBoard newBoardIC = null;
             try {
                 newBoardIC = new ProbCentralBoard(board.getCent(), board.getNClients(), board.getPropc(), board.getPropg()); //Board per l'operador canviar central
             } catch (Exception ex) {
                 Logger.getLogger(ProbCentralSuccessorFunction.class.getName()).log(Level.SEVERE, null, ex);
             }
-            for (int k=0;k<newBoardIC.getNClients(); k++){
+            for (int k = 0; k < ncl; k++){
                 if (i!= k) newBoardIC.intercanviarClients(i,k);
                 String S="Intercanviar client "+i+"amb el client "+k;
                 retVal.add(new Successor(S,newBoardMC));
@@ -57,6 +60,7 @@ public class ProbCentralSuccessorFunction implements SuccessorFunction{
                 retVal.add(new Successor(S,newBoardBC));
             }
         }
+        
         ProbCentralBoard newBoardBCMP = null;
         newBoardBCMP.buidarCentralAmbMesPotencial();
         String S="buidar central amb més potencial"; 
