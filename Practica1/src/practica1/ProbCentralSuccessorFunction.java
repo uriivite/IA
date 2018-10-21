@@ -1,4 +1,3 @@
-
 package practica1;
 
 import IA.Energia.Centrales;
@@ -34,6 +33,17 @@ public class ProbCentralSuccessorFunction implements SuccessorFunction{
                 String S="Moure client "+i+"a central "+j; 
                 retVal.add(new Successor(S,newBoardMC));
              }
+             ProbCentralBoard newBoardIC = null;
+            try {
+                newBoardIC = new ProbCentralBoard(board.getCent(), board.getNClients(), board.getPropc(), board.getPropg()); //Board per l'operador canviar central
+            } catch (Exception ex) {
+                Logger.getLogger(ProbCentralSuccessorFunction.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            for (int k=0;k<newBoardIC.getNClients(); k++){
+                if (i!= k) newBoardIC.intercanviarClients(i,k);
+                String S="Intercanviar client "+i+"amb el client "+k;
+                retVal.add(new Successor(S,newBoardMC));
+            }
         }
         for (int k=0;k<board.getNCentrals(); ++k){
             ProbCentralBoard newBoardBC = null;
@@ -51,11 +61,6 @@ public class ProbCentralSuccessorFunction implements SuccessorFunction{
         newBoardBCMP.buidarCentralAmbMesPotencial();
         String S="buidar central amb més potencial"; 
         retVal.add(new Successor(S,newBoardBCMP));
-        
-        ProbCentralBoard newBoardIC = null;
-        newBoardIC.intercanviarClients();
-        S="intercanvia dos clients aleatoris de dos centrals diferents";
-        retVal.add(new Successor(S,newBoardIC));
         
     return retVal;
   }
