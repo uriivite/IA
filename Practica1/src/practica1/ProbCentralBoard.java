@@ -60,11 +60,14 @@ public class ProbCentralBoard {
 	return (double)nivellProduccio[i].getSecond() == 0;
     }
     
+    //Retorna la posicio de la central indexReal en el vector nivellProduccio en aquell moment
     private int findPosCentral(int indexReal){
-        for (int i = 0; i < ncentrals; i++){
-            if((int)nivellProduccio[i].getFirst() == indexReal) return i;
+        boolean found = false;
+        int i = 0;
+        for (; i < ncentrals && !found; i++){
+            if((int)nivellProduccio[i].getFirst() == indexReal) found = true;
         }
-        return -1;
+        return i;
     }
     
     public ProbCentralBoard (int[] cent1, int ncl, double[] propc1, double propg1) throws Exception {
@@ -94,13 +97,18 @@ public class ProbCentralBoard {
             return prod2.compareTo(prod1);
         });
         
-        // Inicialitacio del vector de produccio amb els valors maxims de produccio
-        // de cada central, on i = index de la central dins de "centrals" i
-        // nivellProduccio[i] = produccio de la central i
+        /* Inicialitacio del vector de produccio amb els valors maxims de produccio
+        *  de cada central, on i = index de la central dins de "centrals" i
+        *   nivellProduccio[i] = produccio de la central i*/
         for (int i = 0; i < ncentrals; i++){
-            nivellProduccio[i].setFirst(i);
-            nivellProduccio[i].setSecond(centrals.get(i).getProduccion());
+            miPair aux = new miPair(i,centrals.get(i).getProduccion());
+            nivellProduccio[i]=aux;
         }
+        
+        /*Inicialitzem totes les connexions com a buides, es a dir
+          els clients no tenen assignats cap central
+        */
+        for (int i = 0; i < nclients; i++) connexions[i] = -1;
     }
 
     public void solucioInicial(int tipus) {
@@ -113,7 +121,7 @@ public class ProbCentralBoard {
                         for (int j = 0; j < ncentrals; j++){
                             Central cn = centrals.get(j);
                             double gasto = getConsumoReal(c,cn);
-                            if (gasto <=  ((double)nivellProduccio[j].getSecond() - cn.getProduccion())){
+                            if ((double)nivellProduccio[j].getSecond() - gasto >= 0){
                                 connexions[i] = j;
                                 nivellProduccio[j].setSecond((double)nivellProduccio[j].getSecond() - gasto);
                             }								
@@ -134,7 +142,7 @@ public class ProbCentralBoard {
                             dist_par = distanciaEuclidiana(c.getCoordX(),c.getCoordY(), 
                                     cn.getCoordX(), cn.getCoordY());
                             double gasto = getConsumoReal(c,cn);
-			    if ((dist_par < dist_min) && (gasto <=  (double)nivellProduccio[j].getSecond() - cn.getProduccion())) {
+			    if ((dist_par < dist_min) && (0 <= (double)nivellProduccio[j].getSecond() - gasto)) {
                                 connexions[i] = j;
                                 nivellProduccio[j].setSecond((double)nivellProduccio[j].getSecond() - gasto);
                             }										
@@ -149,32 +157,20 @@ public class ProbCentralBoard {
   //OPERADORS
     
     //modificar el vector connexions pq a la posició del client cl hi hagi la posició de la central ce
-    public void moureClient(Cliente cl, Central ce){
-        boolean found = false;
-        int i = 0;
-        int j = 0;
-        for (; i < nclients && !found; ++i){
-            if (cl == clients.get(i)) found = true;
-        }
-        found = false;
-        for (; j < ncentrals && !found; ++j){
-            if (ce == centrals.get(j)) found = true;
-        }
-        
-        double consumOld = getConsumoReal(clients.get(i),centrals.get(connexions[i]));
-        double consumNew = getConsumoReal(clients.get(i),centrals.get(j));
-        int i1 = findPosCentral(connexions[i]);
-        int i2 = findPosCentral(connexions[j]);
-        if (i1 != -1 && i2 != -1 &&
-           (double)nivellProduccio[i2].getSecond() - consumNew >= 0){
-            
-            nivellProduccio[i1].setSecond((double)nivellProduccio[i1].getSecond() + consumOld);
+    public void moureClient(int cl, int ce){
+        int i2 = findPosCentral(ce);
+        double consumNew = getConsumoReal(clients.get(cl),centrals.get(ce));
+        if ((double)nivellProduccio[i2].getSecond() - consumNew >= 0){
+            if (connexions[cl] != -1) {
+                double consumOld = getConsumoReal(clients.get(cl),centrals.get(connexions[cl]));
+                int i1 = findPosCentral(connexions[cl]);
+                double aux = (double)nivellProduccio[i1].getSecond();
+                nivellProduccio[i1].setSecond(aux + consumOld);
+            }
             nivellProduccio[i2].setSecond((double)nivellProduccio[i2].getSecond() - consumNew);
-            connexions[i] = j;
+            connexions[cl] = ce;
             this.ordenaCentrals();
-        }
-        //falta recalcular consum del client a la nova central        
-        //falta recalcular capacitat central nova i a la central que tenia abans     
+        }     
     }
     
     //Intenta repartir tots els clients de la central amb index c en altres centrals, si ho aconsegueix retorna cert, sinó fals
@@ -192,7 +188,7 @@ public class ProbCentralBoard {
                             connexions[i] = iReal;
                             nivellProduccio[j].setSecond(prodActual-gasto);
                             int index = findPosCentral(c);
-                            if (index != -1) nivellProduccio[index].setSecond((double) nivellProduccio[index].getSecond()+gasto);
+                            nivellProduccio[index].setSecond((double) nivellProduccio[index].getSecond()+gasto);
                         }
                     }
                 }
@@ -364,13 +360,13 @@ public class ProbCentralBoard {
         return compensacio;
     }
 
-    public Centrales getCentralsDisponibles(double d){ //retorna un subset de les centrals que 
-        ArrayList c;
+    public ArrayList<Integer> getCentralsDisponibles(double d){ //retorna un subset de les centrals que 
+        ArrayList<Integer> c;
         c = new ArrayList<>();
         for (int i = 0; i < ncentrals; i++){
-            if ((double)nivellProduccio[i].getSecond() <= d && (double)nivellProduccio[i].getSecond() > 0) 
-                c.add(centrals.get(i));
+            if ((double)nivellProduccio[i].getSecond() - d >= 0) 
+                c.add((Integer)nivellProduccio[i].getFirst());
         }
-        return (Centrales)c;
+        return c;
     }
 }
