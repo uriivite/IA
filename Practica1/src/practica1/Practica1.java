@@ -18,13 +18,15 @@ public class Practica1 {
        public static void main(String[] args) throws Exception{
         
         
-        int[] cent1 = new int[]{2, 3, 4}; //vector de 3 posicions amb el número de centrals de cada tipus a generar
-        int ncl = 10; //número de clients
-        double[] propc1 = new double[]{0.25, 0.25, 0.5}; //vector de 3 posicions amb les proporcions dels tipus de clients, sumen 1
-        double propg1 = 0.1; //proporció de clients amb servei garantitzat
+        int[] cent1 = new int[]{5, 10, 25}; //vector de 3 posicions amb el número de centrals de cada tipus a generar
+        int ncl = 1000; //número de clients
+        double[] propc1 = new double[]{0.25, 0.3, 0.45}; //vector de 3 posicions amb les proporcions dels tipus de clients, sumen 1
+        double propg1 = 0.75; //proporció de clients amb servei garantitzat
         int alg = 1; //si val 1 es farà hill climbing, si val 2 es farà simulated annealig
+        int sol_inicial = 0; //si val 0 farem la primera solució inicial, si val 1 farem la segona
 
         ProbCentralBoard board = new ProbCentralBoard(cent1, ncl, propc1, propg1);
+        board.solucioInicial(sol_inicial);
         Search search=null; 
         Problem p;
            p = new Problem(board, new ProbCentralSuccessorFunction(), new ProbCentralGoalTest(), new ProbCentralHeuristicFunction());
