@@ -24,11 +24,10 @@ public class ProbCentralBoard {
     private miPair[] nivellProduccio;
     private Random r;
 	
-// Ordenem les centrals segons l'Energia "lliure" que encara poden suministrar.
+// Ordenem les centrals segons l'Energia "lliure" que encara poden suministrar(de menor a major)
     private void ordenaCentrals() {
         Arrays.sort(nivellProduccio, (miPair o1, miPair o2) -> {
-            Double dif1;
-            dif1 = (double) o1.getSecond();
+            Double dif1 = (double) o1.getSecond();
             Double dif2 = (double) o2.getSecond();
             return dif1.compareTo(dif2);
         });
@@ -53,7 +52,8 @@ public class ProbCentralBoard {
           
     private boolean centralActiva(int i){//Retorna si la central i està activa o no
         Double aux = centrals.get(i).getProduccion();
-        return aux.equals(nivellProduccio[i].getSecond());
+        int j = findPosCentral(i);
+        return aux.equals(nivellProduccio[j].getSecond());
     }
     
     private boolean centralPlena(int i){
@@ -67,7 +67,7 @@ public class ProbCentralBoard {
         for (; i < ncentrals && !found; i++){
             if((int)nivellProduccio[i].getFirst() == indexReal) found = true;
         }
-        return i;
+        return i - 1;
     }
     
     public ProbCentralBoard (int[] cent1, int ncl, double[] propc1, double propg1) throws Exception {
@@ -230,6 +230,7 @@ public class ProbCentralBoard {
     però en té asignada molt poca a clients. Aquesta funció intenta assignar aquests
     clients a altres centrals, per intentar que aquesta central quedi inoperativa.
     */
+    /*
     public void buidarCentralAmbMesPotencial() {
         int iCentral = (int)nivellProduccio[0].getFirst();
         for (int i = 0; i < nclients; i++) {
@@ -244,6 +245,39 @@ public class ProbCentralBoard {
                     connexions[i] = (int)nivellProduccio[1].getFirst();
                     this.nivellProduccio[0].setSecond((double)nivellProduccio[0].getSecond() + consumRealActual);
                     this.nivellProduccio[1].setSecond((double)nivellProduccio[1].getSecond() - consumRealCentralNova);
+                }
+            }
+        }
+        this.ordenaCentrals();
+    }*/
+    
+    public void buidarCentralAmbMesPotencial() {
+        int iCentral = 0;
+        int iPar = 0;
+        boolean trobat = false;
+        for (int i = ncentrals - 1; i >= 0 && !trobat; i--) if (centralActiva((int)nivellProduccio[i].getFirst())){
+            trobat = true;
+            iCentral = (int)nivellProduccio[i].getFirst();
+            iPar = i;
+        }
+        for (int i = 0; i < nclients; i++) {
+            if (connexions[i] == iCentral) {
+                Cliente c = clients.get(i);
+                Central cnAct = centrals.get(iCentral);
+                double consumRealActual = this.getConsumoReal(c, cnAct);
+                boolean assignat = false;
+                for (int k = 0; k < ncentrals && !assignat; k++){
+                    int iReal = (int)nivellProduccio[k].getFirst();
+                    if(centralActiva(iReal) && !centralPlena(k) && iReal != iCentral){
+                        double gasto = getConsumoReal(clients.get(i),centrals.get(iReal));
+                        double prodActual = (double) nivellProduccio[k].getSecond();
+                        if (prodActual >= gasto){
+                            assignat = true;
+                            connexions[i] = iReal;
+                            nivellProduccio[k].setSecond(prodActual-gasto);
+                            nivellProduccio[iPar].setSecond((double)nivellProduccio[iPar].getSecond()+gasto);
+                        }
+                    }
                 }
             }
         }
@@ -341,7 +375,7 @@ public class ProbCentralBoard {
     public double getConsumCentrals(){ //serà el sumatori del cost de totes les centrals q tinguin algun client
         double consum = 0;
         for (int i=0; i < ncentrals; ++i){
-            if (centralActiva(i)) consum+= getConsum(centrals.get(i).getTipo(), centrals.get(i).getProduccion());
+            if (centralActiva(this.findPosCentral(i))) consum += getConsum(centrals.get(i).getTipo(), centrals.get(i).getProduccion());
         }
         return consum;
     }

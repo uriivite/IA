@@ -32,9 +32,11 @@ public class ProbCentralSuccessorFunction implements SuccessorFunction{
             ArrayList <Integer> CentralsDisponibles = newBoardMC.getCentralsDisponibles(consum);
             //per un client i concret el posem a totes les centrals lliures disponibles, és a dir, que això generarà tants successors com centrals disponibles
             for (int j = 0; j < CentralsDisponibles.size(); j++){
-                newBoardMC.moureClient(i, CentralsDisponibles.get(j));
-                String S="Moure client "+i+"a central "+j; 
-                retVal.add(new Successor(S,newBoardMC));
+                if (i != j){
+                    newBoardMC.moureClient(i, CentralsDisponibles.get(j));
+                    String S="Moure client "+i+" a central "+j; 
+                    retVal.add(new Successor(S,newBoardMC));
+                }
             }
              ProbCentralBoard newBoardIC = null;
             try {
@@ -62,6 +64,11 @@ public class ProbCentralSuccessorFunction implements SuccessorFunction{
         }
         
         ProbCentralBoard newBoardBCMP = null;
+        try {
+                newBoardBCMP = new ProbCentralBoard(board.getCent(), board.getNClients(), board.getPropc(), board.getPropg()); //Board per l'operador canviar central
+            } catch (Exception ex) {
+                Logger.getLogger(ProbCentralSuccessorFunction.class.getName()).log(Level.SEVERE, null, ex);
+            }
         newBoardBCMP.buidarCentralAmbMesPotencial();
         String S="buidar central amb més potencial"; 
         retVal.add(new Successor(S,newBoardBCMP));
