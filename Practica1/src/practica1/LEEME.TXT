@@ -1,2 +1,2 @@
 Para ejecutar la práctica se deberá ejecutar el fichero Practica1.java des de netbeans.
-Para cambiar los parámetros de entrada deberá modificarse las variables cent1, ncl, propc1, propg1 y alg.
+Para cambiar los parámetros de entrada deberá modificarse las variables cent1, ncl, propc1, propg1, alg y sol_inicial del fichero Practica1.java
